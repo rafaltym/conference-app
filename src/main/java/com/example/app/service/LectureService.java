@@ -18,4 +18,10 @@ public class LectureService {
                 .filter(lecture1 -> lecture.getPath() == lecture1.getPath())
                 .findAny().orElse(null);
     }
+
+    public boolean canJoinLecture(Lecture lecture) {
+        return lecture.getBookingSet().size() < 5;
+    }
+
+
 }
