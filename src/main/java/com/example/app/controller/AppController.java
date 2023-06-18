@@ -50,8 +50,7 @@ public class AppController {
                 case "correct":
                     userService.saveUser(booking.getUser());
                     bookingService.saveBooking(booking);
-
-
+                    bookingService.notifyBooking(booking);
                     return new ResponseEntity("Zapisano pomyślnie. login: "+ booking.getUser().getLogin()
                             + " | godzina: " + booking.getLecture().getTime()
                             + " | wybrana ścieżka: " + booking.getLecture().getPath()

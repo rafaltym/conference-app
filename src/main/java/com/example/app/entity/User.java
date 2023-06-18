@@ -20,4 +20,9 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private Set<Booking> bookingSet = new HashSet<>();
+
+    @Override
+    public String toString() {
+        return  "LOGIN: " + login + "  EMAIL: " + email;
+    }
 }
