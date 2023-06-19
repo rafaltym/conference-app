@@ -34,7 +34,7 @@ Request body:<br>
 Uwagi:<br>
 -pole "time" ustawiamy na godzinę rozpoczęcia prelekcji: 10,12 lub 14<br>>
 -pole "path" ustawiamy na numer wybranej ścieżki: 1, 2, lub 3<br>
--po pomyślnym za
+-po pomyślnej rejestracji na wydarzenie do pliku /resources/powiadamienia.txt zapisywane jest potwierdzenie
 
 -----------------------------------------------------------------------
 
