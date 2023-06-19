@@ -7,11 +7,10 @@ import com.example.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/conference")
 public class AppController {
     @Autowired
     private UserService userService;
@@ -21,19 +20,45 @@ public class AppController {
     private LectureService lectureService;
 
     /*
-    @PostMapping("/user")
-    private ResponseEntity createUser(@RequestBody User user) {
-        userService.saveUser(user);
-        return new ResponseEntity("New user created" + " " + user.getLogin(), HttpStatus.CREATED);
-    }
+    @P
     */
+    @GetMapping("/user/{login}/getbookings")
+    public ResponseEntity showBookings(@PathVariable String login) {
+        try {
+            return new ResponseEntity<>(userService.userLectures(login), HttpStatus.OK);
+        } catch(NullPointerException e) {
+            return new ResponseEntity<>("Brak loginu '" + login + "' w bazie", HttpStatus.BAD_REQUEST);
+        }
+    }
 
-    @PostMapping("/booking")
+    @PostMapping("/user/emailupdate")
+    public ResponseEntity userEmailChange(@RequestParam String login, String email, String newEmail) {
+        try
+        {
+            if (userService.emailUpdate(login, email, newEmail)) {
+                return new ResponseEntity<>("Email został zmieniony pomyślnie.", HttpStatus.OK);
+            }
+            return new ResponseEntity<>("Użytkownik nie istnieje lub podany nowy email jest niepoprawny.", HttpStatus.NOT_ACCEPTABLE);
+        } catch (NullPointerException e) {
+            return new ResponseEntity<>("Nie znaleziono."  +e, HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+
+
+    @GetMapping("/getschedule")
+    public ResponseEntity showSchedule() {
+        return new ResponseEntity<>(lectureService.lectureSchedule(), HttpStatus.OK);
+    }
+
+
+    @PostMapping("/createbooking")
     private ResponseEntity createBooking(@RequestBody Booking booking) {
         try {
             booking.setLecture(lectureService.getLecture(booking.getLecture()));
             if(!lectureService.canJoinLecture(booking.getLecture())) {
-                return new ResponseEntity("Limit miejsc na prelekcji '"
+                return new ResponseEntity<>("Limit miejsc na prelekcji '"
                         + booking.getLecture().getPath() + "' został osiągnięty"
                         , HttpStatus.NOT_ACCEPTABLE);
 
@@ -43,18 +68,20 @@ public class AppController {
                 case "exist":
                     booking.setUser(userService.getUser(booking.getUser()));
                     if(!userService.canUserJoinLecture(booking.getUser(), booking.getLecture())) {
-                        return new ResponseEntity("Nie możesz zapisać się na prelekcję, która odbywa się o "
-                                + booking.getLecture().getTime(), HttpStatus.NOT_ACCEPTABLE);
+                        return new ResponseEntity<>("Nie możesz zapisać się na kolejną prelekcję, która odbywa się o "
+                                + booking.getLecture().getTime() + ":00", HttpStatus.NOT_ACCEPTABLE);
                     }
 
                 case "correct":
                     userService.saveUser(booking.getUser());
                     bookingService.saveBooking(booking);
-                    bookingService.notifyBooking(booking);
-                    return new ResponseEntity("Zapisano pomyślnie. login: "+ booking.getUser().getLogin()
-                            + " | godzina: " + booking.getLecture().getTime()
-                            + " | wybrana ścieżka: " + booking.getLecture().getPath()
-                            , HttpStatus.CREATED);
+                    bookingService.notification(booking);
+                    return new ResponseEntity<>("Dokonano rezerwacji na email: " +
+                            booking.getUser().getEmail() +
+                            "   login: "+ booking.getUser().getLogin() +
+                            " | godzina: " + booking.getLecture().getTime() + ":00" +
+                            "   ścieżka: '" + booking.getLecture().getPath() +
+                            "'", HttpStatus.CREATED);
 
                 case "email exist":
                     return new ResponseEntity<>("Podany login jest nieprawidłowy", HttpStatus.NOT_ACCEPTABLE);
@@ -68,10 +95,10 @@ public class AppController {
 
         }
 
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
         } catch (NullPointerException e) {
-            return new ResponseEntity("Podane dane nie są prawidłowe", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("Podane dane nie są prawidłowe", HttpStatus.NOT_ACCEPTABLE);
         }
     }
 

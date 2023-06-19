@@ -10,7 +10,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 
 @Service
 public class BookingService {
@@ -21,7 +20,7 @@ public class BookingService {
         bookingRepository.save(booking);
     }
 
-    public void notifyBooking(Booking booking) {
+    public void notification(Booking booking) {
         LocalDate date = LocalDate.now();
         LocalTime time = LocalTime.now().withNano(0);
         try {

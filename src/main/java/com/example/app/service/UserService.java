@@ -1,5 +1,6 @@
 package com.example.app.service;
 
+import com.example.app.entity.Booking;
 import com.example.app.entity.Lecture;
 import com.example.app.entity.User;
 import com.example.app.repository.UserRepository;
@@ -13,6 +14,36 @@ public class UserService {
 
     public void saveUser(User user) {
         userRepository.save(user);
+    }
+
+    //return String with lectures to which user is enrolled
+    public String userLectures(String login) {
+        StringBuilder stringBuilder = new StringBuilder();
+        int num = 1;
+        for (Booking booking: userRepository.findByLogin(login).getBookingSet()){
+            stringBuilder.append(num).append(". ").append(booking.getLecture()).append("<br>");
+            num += 1;
+        }
+
+        return stringBuilder.toString();
+    }
+
+    public boolean emailUpdate(String login, String email, String newEmail) {
+        if (validateEmail(newEmail) && doesUserExist(login, email)){
+            User user = userRepository.findByEmail(email);
+            user.setEmail(newEmail);
+            userRepository.save(user);
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+    private boolean doesUserExist(String login, String email) {
+        if(userRepository.findByEmail(email).equals(userRepository.findByLogin(login))) {
+            return true;
+        }
+        return false;
     }
 
     public User getUser(User user) {
@@ -34,7 +65,7 @@ public class UserService {
         else if(userRepository.findByEmail(user.getEmail()) != null) {
             return "email exist";
         }
-        else if (!emailValidation(user.getEmail())) {
+        else if (!validateEmail(user.getEmail())) {
             return "email incorrect";
         }else if (!loginValidation(user.getLogin())) {
             return "login incorrect";
@@ -46,7 +77,7 @@ public class UserService {
 
     }
 
-    private boolean emailValidation(String email) {
+    private boolean validateEmail(String email) {
         String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
                 + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
         return email.matches(regexPattern);

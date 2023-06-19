@@ -23,4 +23,10 @@ public class Lecture {
 
     @OneToMany(mappedBy = "lecture")
     private Set<Booking> bookingSet = new HashSet<>();
+
+    @Override
+    public String toString() {
+        return "godzina- " + time + ":00"+
+                ", ścieżka- '" + path + "'";
+    }
 }

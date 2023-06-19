@@ -9,3 +9,4 @@ INSERT INTO Lectures(time, path) VALUES(12, 3);
 INSERT INTO Lectures(time, path) VALUES(14, 1);
 INSERT INTO Lectures(time, path) VALUES(14, 2);
 INSERT INTO Lectures(time, path) VALUES(14, 3);
+

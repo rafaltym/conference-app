@@ -23,5 +23,15 @@ public class LectureService {
         return lecture.getBookingSet().size() < 5;
     }
 
+    public String lectureSchedule() {
+        return  "Rozkład prelekcji na Konferencji - 1 czerwiec 2023<br>" +
+                "--------------------------------------------------<br>" +
+                "10:00 - 11:45 prelekcja I - ścieżki '1', '2', '3'<br>" +
+                "11:45 - 12:00 przerwa na kawę<br>" +
+                "12:00 - 13:45 prelekcja II - ścieżki '1', '2', '3'<br>" +
+                "13:45 - 14:00 przerwa na kawę<br>" +
+                "14:00 - 15:45 prelekcja III - ścieżki '1', '2', '3'";
+    }
+
 
 }

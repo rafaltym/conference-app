@@ -1,2 +1,0 @@
-2023-06-19 00:57:50 LOGIN: ralh2  EMAIL: ral23t@kkp.pl  MSG: Dokonano rezerwacji na prelekcję '2' na godzinę 10
-2023-06-19 00:58:20 LOGIN: rlh2  EMAIL: ralt@kkp.pl  MSG: Dokonano rezerwacji na prelekcję '2' na godzinę 10
