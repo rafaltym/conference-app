@@ -34,4 +34,14 @@ public class BookingService {
         }
 
     }
+    public Booking getBooking(Booking booking) {
+        return bookingRepository.findAll().stream()
+                .filter(booking1 -> booking1.getLecture() == booking.getLecture())
+                .filter(booking1 -> booking.getUser() == booking.getUser())
+                .findFirst().orElse(null);
+    }
+
+    public void deleteBooking(Booking booking) {
+        bookingRepository.delete(booking);
+    }
 }

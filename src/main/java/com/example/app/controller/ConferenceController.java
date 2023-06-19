@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/conference")
-public class AppController {
+public class ConferenceController {
     @Autowired
     private UserService userService;
     @Autowired
@@ -19,9 +19,7 @@ public class AppController {
     @Autowired
     private LectureService lectureService;
 
-    /*
-    @P
-    */
+
     @GetMapping("/user/{login}/getbookings")
     public ResponseEntity showBookings(@PathVariable String login) {
         try {
@@ -31,7 +29,7 @@ public class AppController {
         }
     }
 
-    @PostMapping("/user/emailupdate")
+    @PatchMapping("/user/emailupdate")
     public ResponseEntity userEmailChange(@RequestParam String login, String email, String newEmail) {
         try
         {
@@ -44,16 +42,33 @@ public class AppController {
         }
     }
 
+    @GetMapping("/getusers")
+    public ResponseEntity getUser() {
+        return new ResponseEntity<>(userService.userList(), HttpStatus.OK);
+    }
 
 
 
     @GetMapping("/getschedule")
-    public ResponseEntity showSchedule() {
+    public ResponseEntity getSchedule() {
         return new ResponseEntity<>(lectureService.lectureSchedule(), HttpStatus.OK);
     }
 
+    @GetMapping("/booking/delete")
+    public ResponseEntity deleteBooking(@RequestBody Booking booking) {
+        try {
+            booking.setLecture(lectureService.getLecture(booking.getLecture()));
+            booking.setUser(userService.getUser(booking.getUser()));
+            booking.setId(bookingService.getBooking(booking).getId());
+            bookingService.deleteBooking(booking);
+            return new ResponseEntity<>("Pomyślnie anulowano rezerwację." , HttpStatus.OK);
+        } catch (NullPointerException e) {
+            return new ResponseEntity<>("Nie znaleziono rezerwacji. " + e, HttpStatus.NOT_FOUND);
+        }
 
-    @PostMapping("/createbooking")
+    }
+
+    @PostMapping("/booking/create")
     private ResponseEntity createBooking(@RequestBody Booking booking) {
         try {
             booking.setLecture(lectureService.getLecture(booking.getLecture()));

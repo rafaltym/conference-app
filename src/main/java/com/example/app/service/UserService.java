@@ -16,12 +16,23 @@ public class UserService {
         userRepository.save(user);
     }
 
+
     //return String with lectures to which user is enrolled
     public String userLectures(String login) {
         StringBuilder stringBuilder = new StringBuilder();
         int num = 1;
         for (Booking booking: userRepository.findByLogin(login).getBookingSet()){
             stringBuilder.append(num).append(". ").append(booking.getLecture()).append("<br>");
+            num += 1;
+        }
+
+        return stringBuilder.toString();
+    }
+    public String userList() {
+        StringBuilder stringBuilder = new StringBuilder();
+        int num = 1;
+        for (User user: userRepository.findAll()){
+            stringBuilder.append(num).append(". ").append(user.toString()).append("<br>");
             num += 1;
         }
 
